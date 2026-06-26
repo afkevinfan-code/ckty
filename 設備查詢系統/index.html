@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>桃園智慧停車設備查詢系統</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="page-shell">
+      <header class="hero">
+        <p class="eyebrow">TAOYUAN SMART PARKING</p>
+        <h1>設備資料查詢</h1>
+        <p>依路段代碼查詢停車格與設備類別，快速取得設備與鏡頭通訊資訊。</p>
+      </header>
+
+      <section class="search-card" aria-labelledby="query-title">
+        <div class="section-heading">
+          <div>
+            <h2 id="query-title">查詢條件</h2>
+            <p><span class="required">＊</span>路段代碼為必填；車格編號與設備類別可擇一或同時篩選。</p>
+          </div>
+          <div id="data-status" class="data-status" aria-live="polite"></div>
+        </div>
+        <form id="search-form" novalidate>
+          <label>
+            路段代碼 <span class="required">＊</span>
+            <input id="road-code" name="roadCode" inputmode="numeric" autocomplete="off" placeholder="例如：942" required />
+          </label>
+          <label>
+            車格編號
+            <input id="space-no" name="spaceNo" inputmode="numeric" autocomplete="off" placeholder="例如：005 或 5" />
+          </label>
+          <label>
+            設備類別
+            <select id="equipment-type" name="equipmentType">
+              <option value="">全部設備類別</option>
+              <option value="市電版自然排水">市電版自然排水</option>
+              <option value="路緣石電池版（左">路緣石電池版（左）</option>
+              <option value="路緣石電池版（右">路緣石電池版（右）</option>
+              <option value="電池版自然排水">電池版自然排水</option>
+              <option value="電動排水">電動排水</option>
+            </select>
+          </label>
+          <div class="actions">
+            <button type="submit">查詢資料</button>
+            <button type="button" id="reset-button" class="secondary">清除</button>
+          </div>
+        </form>
+        <p id="form-message" class="form-message" role="alert"></p>
+      </section>
+
+      <section id="results-section" class="results" aria-live="polite" hidden>
+        <div class="result-heading">
+          <div>
+            <h2>查詢結果</h2>
+            <p id="result-summary"></p>
+          </div>
+          <button id="copy-button" class="secondary" type="button" hidden>複製結果</button>
+        </div>
+        <div id="result-list" class="result-list"></div>
+      </section>
+    </main>
+    <template id="result-template">
+      <article class="result-card">
+        <header class="result-card__header">
+          <div>
+            <p class="result-location"></p>
+            <h3></h3>
+          </div>
+          <div class="badges"></div>
+        </header>
+        <dl class="detail-grid"></dl>
+        <p class="source-note"></p>
+      </article>
+    </template>
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
