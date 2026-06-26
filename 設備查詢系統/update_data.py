@@ -3,13 +3,14 @@
 from __future__ import annotations
 
 import json
+import re
 from datetime import date
 from pathlib import Path
 
 import openpyxl
 
 
-SOURCE = Path("/Users/kevinfan/Desktop/桃園電池版設備明細表_系統.xlsx")
+SOURCE = Path("/Users/kevinfan/Desktop/桃園電池版設備明細表系統_v0626.xlsx")
 OUTPUT = Path(__file__).with_name("data.js")
 
 
@@ -17,6 +18,24 @@ def text(value: object) -> str:
     if value is None:
         return ""
     if isinstance(value, float) and value.is_integer():
+        return str(int(value))
+    return str(value).strip()
+
+
+def cell_text(cell: openpyxl.cell.cell.Cell, fallback_digits: int | None = None) -> str:
+    """讀取 Excel 顯示格式，保留識別碼的前導零。"""
+    value = cell.value
+    if value is None:
+        return ""
+    if isinstance(value, bool):
+        return str(value)
+    if isinstance(value, (int, float)) and float(value).is_integer():
+        display_format = cell.number_format.split(";")[0].strip()
+        zero_format = re.fullmatch(r"0+", display_format)
+        if zero_format:
+            return f"{int(value):0{len(display_format)}d}"
+        if fallback_digits:
+            return f"{int(value):0{fallback_digits}d}"
         return str(int(value))
     return str(value).strip()
 
@@ -52,23 +71,24 @@ def main() -> None:
     records: list[dict[str, object]] = []
     seen: set[str] = set()
 
-    for source_row, row in enumerate(sheet.iter_rows(min_row=6, values_only=True), start=6):
+    for source_row, cells in enumerate(sheet.iter_rows(min_row=6), start=6):
+        row = tuple(cell.value for cell in cells)
         if not row[5]:
             continue
         record = {
-            "roadCode": text(row[5]),
-            "roadName": text(row[3]),
-            "district": text(row[4]),
-            "spaceNo": text(row[8]),
+            "roadCode": cell_text(cells[5]),
+            "roadName": cell_text(cells[3]),
+            "district": cell_text(cells[4]),
+            "spaceNo": cell_text(cells[8]),
             "types": equipment_types(row),
-            "deviceCabinetNo": text(row[6]),
-            "frontPlateSerial": text(row[31]),
-            "rearPlateSerial": text(row[32]),
-            "frontSimSn": text(row[33]),
-            "rearSimSn": text(row[34]),
-            "publicIp": text(row[36]),
-            "frontPort": text(row[37]),
-            "rearPort": text(row[38]),
+            "deviceCabinetNo": cell_text(cells[6]),
+            "frontPlateSerial": cell_text(cells[31], fallback_digits=12),
+            "rearPlateSerial": cell_text(cells[32], fallback_digits=12),
+            "frontSimSn": cell_text(cells[33]),
+            "rearSimSn": cell_text(cells[34]),
+            "publicIp": cell_text(cells[36]),
+            "frontPort": cell_text(cells[37]),
+            "rearPort": cell_text(cells[38]),
             "sourceRow": source_row,
         }
         # 原表有完全相同的重複列，查詢時只保留一筆，避免結果重覆。
