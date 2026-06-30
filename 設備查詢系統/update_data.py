@@ -10,7 +10,7 @@ from pathlib import Path
 import openpyxl
 
 
-SOURCE = Path("/Users/kevinfan/Desktop/桃園電池版設備明細表系統_v0626.xlsx")
+SOURCE = Path("/Users/kevinfan/Desktop/桃園電池版設備明細表系統_v0630.xlsx")
 OUTPUT = Path(__file__).with_name("data.js")
 
 
