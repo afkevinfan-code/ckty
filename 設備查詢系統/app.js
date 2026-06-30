@@ -38,6 +38,7 @@ function render(records, roadCode) {
       ["前車牌序號", record.frontPlateSerial], ["後車牌序號", record.rearPlateSerial],
       ["前車牌 SIM SN.", record.frontSimSn], ["後車牌 SIM SN.", record.rearSimSn],
       ["市電版對外 IP", record.publicIp], ["前車牌對外 PORT.", record.frontPort], ["後車牌對外 PORT.", record.rearPort],
+      ["門號", record.phoneNumber],
     ];
     const detailGrid = fragment.querySelector(".detail-grid");
     fields.forEach(([label, value]) => { const cell = document.createElement("div"); const dt = document.createElement("dt"); const dd = document.createElement("dd"); dt.textContent = label; dd.textContent = display(value); cell.append(dt, dd); detailGrid.append(cell); });

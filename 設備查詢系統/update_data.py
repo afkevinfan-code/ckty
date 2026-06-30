@@ -10,7 +10,7 @@ from pathlib import Path
 import openpyxl
 
 
-SOURCE = Path("/Users/kevinfan/Desktop/桃園電池版設備明細表系統_v0630.xlsx")
+SOURCE = Path("/Users/kevinfan/Documents/Codex/2026-06-29/fu/outputs/桃園電池版設備明細表系統_v0630_門號回填.xlsx")
 OUTPUT = Path(__file__).with_name("data.js")
 
 
@@ -89,6 +89,7 @@ def main() -> None:
             "publicIp": cell_text(cells[36]),
             "frontPort": cell_text(cells[37]),
             "rearPort": cell_text(cells[38]),
+            "phoneNumber": cell_text(cells[40]),
             "sourceRow": source_row,
         }
         # 原表有完全相同的重複列，查詢時只保留一筆，避免結果重覆。
