@@ -11,11 +11,69 @@ const copyButton = document.querySelector("#copy-button");
 
 document.querySelector("#data-status").textContent = `資料來源：${data.source}｜${data.recordCount} 筆`;
 
+function renderRoadCodeList() {
+  const grid = document.querySelector(".road-code-grid");
+  if (!grid) return;
+
+  const roadMap = new Map();
+  data.records.forEach((record) => {
+    const key = `${record.district}|${record.roadName}|${record.roadCode}`;
+    if (!roadMap.has(key)) {
+      roadMap.set(key, {
+        district: record.district,
+        roadName: record.roadName,
+        roadCode: record.roadCode,
+      });
+    }
+  });
+
+  const roads = Array.from(roadMap.values());
+  const chunkSize = Math.ceil(roads.length / 3);
+  const chunks = [roads.slice(0, chunkSize), roads.slice(chunkSize, chunkSize * 2), roads.slice(chunkSize * 2)];
+
+  grid.replaceChildren();
+  chunks.forEach((chunk) => {
+    const table = document.createElement("table");
+    table.className = "road-code-table";
+    table.innerHTML = `
+      <thead>
+        <tr>
+          <th scope="col">區域</th>
+          <th scope="col">路名</th>
+          <th scope="col">路段代碼</th>
+        </tr>
+      </thead>
+    `;
+    const tbody = document.createElement("tbody");
+    chunk.forEach((road, index) => {
+      const row = document.createElement("tr");
+      const isFirstInDistrict = index === 0 || chunk[index - 1].district !== road.district;
+      if (isFirstInDistrict) {
+        const districtCell = document.createElement("th");
+        districtCell.scope = "rowgroup";
+        districtCell.rowSpan = chunk.filter((item, itemIndex) => itemIndex >= index && item.district === road.district).length;
+        districtCell.textContent = display(road.district);
+        row.append(districtCell);
+      }
+      const roadCell = document.createElement("td");
+      roadCell.textContent = display(road.roadName);
+      const codeCell = document.createElement("td");
+      codeCell.textContent = display(road.roadCode);
+      row.append(roadCell, codeCell);
+      tbody.append(row);
+    });
+    table.append(tbody);
+    grid.append(table);
+  });
+}
+
 function normalize(value) { return String(value || "").trim().replace(/\s/g, ""); }
 function normalizeSpace(value) { const cleaned = normalize(value); return /^\d+$/.test(cleaned) ? String(Number(cleaned)) : cleaned.toUpperCase(); }
 function sameSpace(left, right) { return normalizeSpace(left) === normalizeSpace(right); }
 function display(value) { return value || "—"; }
 function matchesType(record, filter) { return !filter || record.types.some((type) => type.includes(filter)); }
+
+renderRoadCodeList();
 
 function render(records, roadCode) {
   resultsSection.hidden = false;

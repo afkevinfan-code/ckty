@@ -14,7 +14,7 @@
 /Users/kevinfan/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3 update_data.py
 ```
 
-此動作會由 `/Users/kevinfan/Documents/Codex/2026-06-29/fu/outputs/桃園電池版設備明細表系統_v0630_門號回填.xlsx` 重新產生 `data.js`。車格編號、門號及數字型車牌序號會依 Excel 的顯示格式保留前導零；來源表內完全相同的重複列會自動合併，避免查詢結果重複顯示。
+此動作會由 `/tmp/codex-remote-attachments/019f033b-ca1d-74f2-8e68-c01f7499f8f2/3F1A78D3-423D-4EF6-9743-8CC50594B020/1-設備明細表系統_v0820.xlsx` 重新產生 `data.js`。車格編號、門號及數字型車牌序號會依 Excel 的顯示格式保留前導零；來源表內完全相同的重複列會自動合併，避免查詢結果重複顯示。
 
 ## 設備類別判讀
 
